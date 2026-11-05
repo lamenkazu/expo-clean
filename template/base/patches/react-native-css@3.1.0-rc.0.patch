@@ -1,0 +1,30 @@
+diff --git a/dist/commonjs/components/index.cjs b/dist/commonjs/components/index.cjs
+index 23af26cff9df498d6c7723abba2e5f7a9a219336..18950d68a6eebde3df2a7d483f166d91130e47f6 100644
+--- a/dist/commonjs/components/index.cjs
++++ b/dist/commonjs/components/index.cjs
+@@ -117,6 +117,10 @@ module.exports = {
+   get AppRegistry() {
+     return require("react-native").AppRegistry;
+   },
++  // NFC Studio: o RN 0.88 exporta o AssetRegistry, que faltava na lista (expo-asset precisa dele).
++  get AssetRegistry() {
++    return require("react-native").AssetRegistry;
++  },
+   get AppState() {
+     return require("react-native").AppState;
+   },
+diff --git a/dist/module/components/index.cjs b/dist/module/components/index.cjs
+index 23af26cff9df498d6c7723abba2e5f7a9a219336..18950d68a6eebde3df2a7d483f166d91130e47f6 100644
+--- a/dist/module/components/index.cjs
++++ b/dist/module/components/index.cjs
+@@ -117,6 +117,10 @@ module.exports = {
+   get AppRegistry() {
+     return require("react-native").AppRegistry;
+   },
++  // NFC Studio: o RN 0.88 exporta o AssetRegistry, que faltava na lista (expo-asset precisa dele).
++  get AssetRegistry() {
++    return require("react-native").AssetRegistry;
++  },
+   get AppState() {
+     return require("react-native").AppState;
+   },
