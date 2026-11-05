@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/auth/confirm",
+      "destination": "__APP_SCHEME__:///sign-in?confirmed=1",
+      "permanent": false
+    },
+    {
+      "source": "/auth/recovery",
+      "destination": "__APP_SCHEME__:///recovery",
+      "permanent": false
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# O React Native ainda espera as dependencias na raiz de node_modules.
+nodeLinker: hoisted
+
+allowBuilds:
+  "@firebase/util": false
+  "@parcel/watcher": true
+  "@tailwindcss/oxide": true
+  esbuild: true
+  protobufjs: false
+
+overrides:
+  # Transitiva do SDK JS do Firebase. Corrige a falha de getAuthContext sem mudar a major.
+  "@grpc/grpc-js": ^1.13.6
+  # O react-native-css le o CSS compilado por esta versao. Outra versao quebra o global.css.
+  lightningcss: 1.30.1

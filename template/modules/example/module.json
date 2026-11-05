@@ -1,0 +1,95 @@
+{
+  "description": "Feature de exemplo (notas): CRUD em MVVM sobre SQLite, com testes de dominio e view-model",
+  "inject": [
+    {
+      "file": "src/core/error/error-codes.ts",
+      "marker": "error-codes",
+      "content": "NOTES_NOT_FOUND: 'NOTES_NOT_FOUND',\nNOTES_UNKNOWN: 'NOTES_UNKNOWN',\n"
+    },
+    {
+      "file": "src/infra/shared/i18n/locales/pt-BR/errors.ts",
+      "marker": "i18n-errors",
+      "content": "NOTES_NOT_FOUND: 'Esta nota não existe mais.',\nNOTES_UNKNOWN: 'Não foi possível acessar as notas.',"
+    },
+    {
+      "file": "src/infra/shared/i18n/resources.ts",
+      "marker": "i18n-imports",
+      "content": "import notes from './locales/pt-BR/notes';"
+    },
+    {
+      "file": "src/infra/shared/i18n/resources.ts",
+      "marker": "i18n-namespaces",
+      "content": "notes,"
+    },
+    {
+      "file": "src/infra/shared/i18n/locales/pt-BR/common.ts",
+      "marker": "i18n-tabs",
+      "content": "notes: 'Notas',"
+    },
+    {
+      "file": "src/infra/app/navigation/main-tabs.ts",
+      "marker": "main-tabs",
+      "content": "{ route: 'notes', labelKey: 'tabs.notes', icon: 'list', target: 'tab.notes' },"
+    },
+    {
+      "file": "src/core/domain/tours.ts",
+      "marker": "tour-targets",
+      "content": "| 'tab.notes'\n| 'notes.add'\n| 'notes.list'"
+    },
+    {
+      "file": "src/core/domain/tours.ts",
+      "marker": "tour-ids",
+      "content": "| 'notes'"
+    },
+    {
+      "file": "src/core/domain/tours.ts",
+      "marker": "tours",
+      "content": "{\n  id: 'notes',\n  labelKey: 'tours:notes.label',\n  steps: [\n    {\n      target: 'notes.add',\n      titleKey: 'tours:notes.add.title',\n      bodyKey: 'tours:notes.add.body',\n    },\n    {\n      target: 'notes.list',\n      skipWithoutTarget: true,\n      titleKey: 'tours:notes.list.title',\n      bodyKey: 'tours:notes.list.body',\n    },\n  ],\n},"
+    },
+    {
+      "file": "src/infra/shared/i18n/locales/pt-BR/tours.ts",
+      "marker": "i18n-tours",
+      "content": "notes: {\n  label: 'Notas',\n  add: {\n    title: 'Crie uma nota',\n    body: 'Toque aqui para escrever. A nota fica salva no aparelho, mesmo sem internet.',\n  },\n  list: {\n    title: 'Suas notas',\n    body: 'Toque em uma nota para editar. A estrela fixa a nota no topo.',\n  },\n},"
+    },
+    {
+      "file": "src/infra/modules/settings/screens/Settings/model.ts",
+      "marker": "tour-routes",
+      "content": "notes: '/notes',"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-imports",
+      "content": "import type { NotesRepository } from '@core/repositories/notes.repository';\nimport { NotesSqliteRepository } from '@infra/data/local/repositories/notes-sqlite.repository';"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-fields",
+      "content": "private readonly notesRepository: NotesRepository;"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-constructor",
+      "content": "this.notesRepository = new NotesSqliteRepository();"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-getters",
+      "content": "getNotesRepository(): NotesRepository {\n  return this.notesRepository;\n}\n"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-imports",
+      "content": "import { InMemoryNotesRepository } from '@test/repositories/in-memory-notes.repository';"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-fields",
+      "content": "notesRepository: new InMemoryNotesRepository(),"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-getters",
+      "content": "getNotesRepository: () => deps.notesRepository,"
+    }
+  ]
+}

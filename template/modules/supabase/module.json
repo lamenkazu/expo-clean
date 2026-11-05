@@ -1,0 +1,87 @@
+{
+  "description": "Supabase: client, autenticacao por e-mail (telas, provider, guard), pasta supabase/ e redirecionador de links",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "react-native-url-polyfill": "^4.0.0"
+  },
+  "env": [
+    "",
+    "# Supabase (Project Settings > API). A chave e a publicavel, nunca a service_role.",
+    "EXPO_PUBLIC_SUPABASE_URL=https://SEU_PROJETO.supabase.co",
+    "EXPO_PUBLIC_SUPABASE_KEY=",
+    "# Opcional: URL do deeplink-redirector publicado, para os links dos e-mails.",
+    "EXPO_PUBLIC_AUTH_REDIRECT_BASE_URL="
+  ],
+  "inject": [
+    {
+      "file": "src/core/error/error-codes.ts",
+      "marker": "error-codes",
+      "content": "AUTH_INVALID_CREDENTIALS: 'AUTH_INVALID_CREDENTIALS',\nAUTH_EMAIL_NOT_CONFIRMED: 'AUTH_EMAIL_NOT_CONFIRMED',\nAUTH_USER_EXISTS: 'AUTH_USER_EXISTS',\nAUTH_SESSION_EXPIRED: 'AUTH_SESSION_EXPIRED',\nAUTH_UNAUTHORIZED: 'AUTH_UNAUTHORIZED',\nAUTH_INVALID_LINK: 'AUTH_INVALID_LINK',\nAUTH_UNKNOWN: 'AUTH_UNKNOWN',\n"
+    },
+    {
+      "file": "src/infra/shared/i18n/locales/pt-BR/errors.ts",
+      "marker": "i18n-errors",
+      "content": "AUTH_INVALID_CREDENTIALS: 'E-mail ou senha incorretos.',\nAUTH_EMAIL_NOT_CONFIRMED: 'Confirme o e-mail antes de entrar. O link foi enviado no cadastro.',\nAUTH_USER_EXISTS: 'Já existe uma conta com este e-mail.',\nAUTH_SESSION_EXPIRED: 'Sua sessão expirou. Entre de novo.',\nAUTH_UNAUTHORIZED: 'Você não tem permissão para fazer isso.',\nAUTH_INVALID_LINK: 'Link inválido ou expirado. Peça um novo.',\nAUTH_UNKNOWN: 'Não foi possível concluir. Tente de novo.',"
+    },
+    {
+      "file": "src/infra/shared/i18n/resources.ts",
+      "marker": "i18n-imports",
+      "content": "import auth from './locales/pt-BR/auth';"
+    },
+    {
+      "file": "src/infra/shared/i18n/resources.ts",
+      "marker": "i18n-namespaces",
+      "content": "auth,"
+    },
+    {
+      "file": "src/infra/shared/ui/icon.tsx",
+      "marker": "icons-feather",
+      "content": "eye: 'eye',\neyeOff: 'eye-off',"
+    },
+    {
+      "file": "src/infra/modules/settings/screens/Settings/view.tsx",
+      "marker": "settings-imports",
+      "content": "import { AccountSection } from '@infra/modules/auth/components/account-section';"
+    },
+    {
+      "file": "src/infra/modules/settings/screens/Settings/view.tsx",
+      "marker": "settings-sections",
+      "content": "<AccountSection />"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-imports",
+      "content": "import type { AuthRepository } from '@core/repositories/auth.repository';\nimport { AuthSupabaseRepository } from '@infra/data/supabase/repositories/auth-supabase.repository';"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-fields",
+      "content": "private readonly authRepository: AuthRepository;"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-constructor",
+      "content": "this.authRepository = new AuthSupabaseRepository();"
+    },
+    {
+      "file": "src/infra/app/di/dependency-injection.factory.ts",
+      "marker": "di-getters",
+      "content": "getAuthRepository(): AuthRepository {\n  return this.authRepository;\n}\n"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-imports",
+      "content": "import { InMemoryAuthRepository } from '@test/repositories/in-memory-auth.repository';"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-fields",
+      "content": "authRepository: new InMemoryAuthRepository(),"
+    },
+    {
+      "file": "test/utils/create-test-dependencies.ts",
+      "marker": "test-di-getters",
+      "content": "getAuthRepository: () => deps.authRepository,"
+    }
+  ]
+}

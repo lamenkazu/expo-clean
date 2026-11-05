@@ -1,0 +1,57 @@
+export default {
+  fields: {
+    fullName: 'Nome completo',
+    email: 'E-mail',
+    emailPlaceholder: 'seu@email.com',
+    password: 'Senha',
+    newPassword: 'Nova senha',
+    confirmPassword: 'Confirmar senha',
+  },
+  password: {
+    show: 'Mostrar senha',
+    hide: 'Ocultar senha',
+  },
+  validation: {
+    nameMin: 'Informe o nome completo.',
+    passwordMismatch: 'As senhas não coincidem.',
+  },
+  signIn: {
+    title: 'Entrar',
+    subtitle: 'Acesse sua conta para continuar.',
+    submit: 'Entrar',
+    submitting: 'Entrando...',
+    createAccount: 'Criar conta',
+    forgotPassword: 'Esqueci minha senha',
+    confirmed: 'E-mail confirmado. Agora você já pode entrar.',
+  },
+  signUp: {
+    title: 'Criar conta',
+    submit: 'Criar conta',
+    submitting: 'Criando conta...',
+    haveAccount: 'Já tenho uma conta',
+    checkEmail: 'Conta criada. Confira seu e-mail para confirmar o cadastro.',
+  },
+  forgot: {
+    title: 'Esqueci minha senha',
+    subtitle: 'Enviaremos um link para criar uma nova senha.',
+    submit: 'Enviar link',
+    submitting: 'Enviando...',
+    sent: 'E-mail enviado. Confira sua caixa de entrada.',
+    back: 'Voltar para entrar',
+  },
+  recovery: {
+    title: 'Nova senha',
+    subtitle: 'Defina uma nova senha para voltar a acessar sua conta.',
+    validating: 'Validando o link...',
+    invalidLink: 'Link inválido. Peça um novo link para continuar.',
+    submit: 'Salvar nova senha',
+    updated: 'Senha atualizada. Você já pode entrar com a nova senha.',
+    goToSignIn: 'Ir para entrar',
+  },
+  account: {
+    title: 'Conta',
+    signedInAs: 'Conectado como {{email}}',
+    signOut: 'Sair da conta',
+    signOutMessage: 'Você quer encerrar a sessão neste aparelho?',
+  },
+};

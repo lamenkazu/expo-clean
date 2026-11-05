@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cli:
+    name: CLI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+  # Gera um app de cada variante e roda as mesmas checagens que o app roda no proprio CI.
+  generated:
+    name: App gerado (${{ matrix.variant }})
+    needs: cli
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: padrao
+            flags: ""
+          - variant: bare
+            flags: "--bare"
+          - variant: supabase
+            flags: "--with-supabase"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Gerar o app
+        run: node dist/cli.js "$RUNNER_TEMP/app-${{ matrix.variant }}" --yes --skip-git --skip-install ${{ matrix.flags }}
+      - name: Checar o app
+        working-directory: ${{ runner.temp }}/app-${{ matrix.variant }}
+        # O app recem-gerado ainda nao tem lockfile, e o pnpm em CI exige um por padrao.
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm lint:fix
+          pnpm typecheck
+          pnpm lint
+          pnpm test --ci
+          pnpm audit --audit-level high

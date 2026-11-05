@@ -1,0 +1,36 @@
+{
+  "name": "@eppck/create-expo",
+  "version": "0.1.0",
+  "description": "CLI que cria apps Expo com a arquitetura Core/Infra + MVVM",
+  "type": "module",
+  "bin": {
+    "create-eppck-expo": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm build",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.4",
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "~5.0.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@11.10.0"
+}
