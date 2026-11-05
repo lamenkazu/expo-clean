@@ -8,6 +8,7 @@ segue aquele template.
 pnpx @eppck/create-expo meu-app
 # sem publicar no npm, a partir deste repositório:
 pnpm build && node dist/cli.js ../meu-app
+# a pasta pode já existir (com o briefing, por exemplo), desde que não tenha arquivos do template
 ```
 
 ## Opções

@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -93,7 +93,7 @@ describe('scaffold', () => {
     );
   });
 
-  it('recusa uma pasta que ja tem arquivos', async () => {
+  it('recusa gerar por cima de outro app', async () => {
     const dir = await generate('app-repetido', []);
 
     await expect(
@@ -106,6 +106,26 @@ describe('scaffold', () => {
         androidPackage: 'com.eppck.x',
         modules: [],
       })
-    ).rejects.toThrow(/nao esta vazia/);
+    ).rejects.toThrow(/ja tem arquivos do template/);
+  });
+  it('gera dentro de uma pasta existente sem tocar nos arquivos dela', async () => {
+    const dir = path.join(root, 'app-com-briefing');
+    await mkdir(path.join(dir, 'docs'), { recursive: true });
+    await writeFile(path.join(dir, 'Briefing.docx'), 'briefing');
+    await writeFile(path.join(dir, 'docs', 'notas.md'), 'anotacoes');
+
+    await scaffold({
+      templateDir: TEMPLATE_DIR,
+      targetDir: dir,
+      displayName: 'Com Briefing',
+      slug: 'app-com-briefing',
+      scheme: 'appcombriefing',
+      androidPackage: 'com.eppck.appcombriefing',
+      modules: ['example'],
+    });
+
+    expect(await read(dir, 'Briefing.docx')).toBe('briefing');
+    expect(await read(dir, 'docs/notas.md')).toBe('anotacoes');
+    expect(existsSync(path.join(dir, 'app.json'))).toBe(true);
   });
 });

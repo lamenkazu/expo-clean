@@ -52,15 +52,32 @@ const copyFilter = (source: string) => {
   return !SKIP_DIRS.has(name) && !SKIP_FILES.has(name);
 };
 
-export const ensureEmptyDir = async (dir: string): Promise<void> => {
-  if (!existsSync(dir)) {
+// Uma pasta existente (com o briefing do produto, por exemplo) e aceita desde que nenhum arquivo
+// dela tenha o mesmo caminho de um arquivo do template: nada da pessoa e sobrescrito.
+export const ensureNoConflicts = async (targetDir: string, sourceDirs: string[]): Promise<void> => {
+  if (!existsSync(targetDir)) {
     return;
   }
 
-  const entries = await readdir(dir);
+  const conflicts = new Set<string>();
 
-  if (entries.length > 0) {
-    throw new Error(`A pasta ${dir} ja existe e nao esta vazia.`);
+  for (const sourceDir of sourceDirs.filter(dir => existsSync(dir))) {
+    for (const file of await walkFiles(sourceDir)) {
+      const relative = path
+        .relative(sourceDir, file)
+        .replace(/(^|[\\/])_gitignore$/, '$1.gitignore');
+
+      if (!SKIP_FILES.has(path.basename(file)) && existsSync(path.join(targetDir, relative))) {
+        conflicts.add(relative);
+      }
+    }
+  }
+
+  if (conflicts.size > 0) {
+    const list = [...conflicts].slice(0, 5).join(', ');
+    throw new Error(
+      `A pasta ${targetDir} ja tem arquivos do template (${list}${conflicts.size > 5 ? ', ...' : ''}).`
+    );
   }
 };
 
@@ -203,7 +220,10 @@ export const scaffold = async (options: ScaffoldOptions): Promise<void> => {
     throw new Error(`Template base nao encontrado em ${baseDir}.`);
   }
 
-  await ensureEmptyDir(options.targetDir);
+  await ensureNoConflicts(options.targetDir, [
+    baseDir,
+    ...options.modules.map(name => path.join(options.templateDir, 'modules', name, 'files')),
+  ]);
   await cp(baseDir, options.targetDir, { recursive: true, filter: copyFilter });
 
   const packageJsonPath = path.join(options.targetDir, 'package.json');
