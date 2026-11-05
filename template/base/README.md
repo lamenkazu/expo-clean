@@ -11,8 +11,9 @@ pnpm app:prebuild     # gera a pasta android/
 pnpm android          # compila, instala no emulador ou no aparelho e abre o Metro
 ```
 
-O Windows precisa aceitar caminhos longos para compilar o código nativo. Rode uma vez, como
-administrador:
+O Windows precisa aceitar caminhos longos para compilar o código nativo. `pnpm android`,
+`pnpm apk:*` e `pnpm aab:release` conferem isso antes de chamar o Gradle (`pnpm check:native`
+confere sozinho). Se faltar, rode uma vez, num PowerShell como administrador, e abra um terminal novo:
 
 ```powershell
 New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name LongPathsEnabled -Value 1 -PropertyType DWORD -Force
