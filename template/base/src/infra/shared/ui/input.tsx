@@ -1,12 +1,17 @@
 import { useAppColors, useAppShape } from '@infra/shared/theme/use-app-colors';
-import { type ComponentRef, type ReactNode, useEffect, useRef } from 'react';
+import { type ComponentRef, type ReactNode, type Ref, useCallback, useEffect, useRef } from 'react';
 import type { TextInputProps } from 'react-native';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
+export type UIInputHandle = ComponentRef<typeof TextInput>;
+
 export interface UIInputProps extends Omit<TextInputProps, 'value' | 'onChangeText'> {
+  ref?: Ref<UIInputHandle>;
   value: string;
   onChangeText: (text: string) => void;
   label?: string;
+  // texto de apoio abaixo do campo; o erro, quando existe, toma o lugar dele
+  help?: string;
   errorMessage?: string;
   containerClassName?: string;
   inputClassName?: string;
@@ -19,12 +24,19 @@ export interface UIInputProps extends Omit<TextInputProps, 'value' | 'onChangeTe
 // No Android, o autoFocus nativo nao abre o teclado enquanto o Modal ainda esta aparecendo.
 const AUTO_FOCUS_DELAY_MS = 250;
 
+const INPUT_PADDING_X = 16;
+// espaco do botao de 48 a direita (w-12)
+const INPUT_PADDING_WITH_ACCESSORY = 48;
+
 export const UIInput = ({
+  ref,
   autoFocus,
   value,
   onChangeText,
   label,
+  help,
   errorMessage,
+  multiline,
   placeholderTextColor,
   containerClassName,
   inputClassName,
@@ -36,7 +48,21 @@ export const UIInput = ({
 }: UIInputProps) => {
   const colors = useAppColors();
   const shape = useAppShape();
-  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const inputRef = useRef<UIInputHandle | null>(null);
+
+  // a ref interna serve ao autoFocus; a de fora, a quem precisa focar o campo
+  const setInputRef = useCallback(
+    (input: UIInputHandle | null) => {
+      inputRef.current = input;
+
+      if (typeof ref === 'function') {
+        ref(input);
+      } else if (ref) {
+        ref.current = input;
+      }
+    },
+    [ref]
+  );
 
   useEffect(() => {
     if (!autoFocus) {
@@ -58,19 +84,24 @@ export const UIInput = ({
 
       <View className="relative">
         <TextInput
-          ref={inputRef}
+          ref={setInputRef}
           value={value}
           onChangeText={onChangeText}
           accessibilityLabel={rest.accessibilityLabel ?? label}
           placeholderTextColor={placeholderTextColor ?? colors.placeholder}
+          multiline={multiline}
+          textAlignVertical={multiline ? 'top' : 'center'}
           style={{
             backgroundColor: colors.inputBackground,
             borderColor: errorMessage ? colors.danger : colors.inputBorder,
             borderRadius: shape.buttonRadius,
             borderWidth: shape.borderWidth,
             color: colors.text,
+            // px-4/pr-12 viram padding-inline, que o TextInput do Android ignora
+            paddingLeft: INPUT_PADDING_X,
+            paddingRight: rightAccessory ? INPUT_PADDING_WITH_ACCESSORY : INPUT_PADDING_X,
           }}
-          className={`px-4 py-3 ${rightAccessory ? 'pr-12' : ''} ${inputClassName ?? ''}`.trim()}
+          className={`py-3 ${multiline ? 'min-h-24' : ''} ${inputClassName ?? ''}`.trim()}
           {...rest}
         />
 
@@ -92,6 +123,10 @@ export const UIInput = ({
           className={`mt-1 text-sm ${errorClassName ?? ''}`.trim()}
         >
           {errorMessage}
+        </Text>
+      ) : help ? (
+        <Text style={{ color: colors.textMuted }} className="mt-1 text-sm">
+          {help}
         </Text>
       ) : null}
     </View>

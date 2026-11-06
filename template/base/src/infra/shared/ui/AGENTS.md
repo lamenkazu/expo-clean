@@ -9,7 +9,14 @@ Componentes genéricos com prefixo `UI`, arquivos em kebab-case e props tipadas 
 - Cores vêm de `useAppColors`, e forma (cantos, bordas, se há cartões) de `useAppShape`. Use
   `useAppSurfaces` para cartões, divisórias, linhas agrupadas e barras: o tema `flat` não tem cartões e
   o `cards` não tem bordas. Não fixe cores do Tailwind, `rounded-*` ou `border` nessas áreas.
-- O Tailwind (`className`) cuida de layout e espaçamento.
+- O Tailwind (`className`) cuida de layout e espaçamento, com três limites que os testes não pegam
+  (o Jest não calcula layout):
+  - `className` só vale nos componentes do `react-native`. O `SafeAreaView` do safe-area-context e
+    outros de terceiros ignoram a prop: passe `style` ou envolva numa `View`;
+  - `px-*`/`pr-*`/`pl-*` viram `padding-inline`, que o `TextInput` do Android ignora. Recuo
+    horizontal de campo vai no `style` (o `UIInput` já faz);
+  - `Text` centralizado num pai `items-center` é medido no tamanho do conteúdo e pode perder a
+    última palavra. Use `self-stretch` no `Text` com `text-center`.
 - Textos padrão (Fechar, Cancelar, Voltar) vêm do i18n, namespace `common`.
 - Ícones só pelo `UIIcon`, com nomes próprios do app. Um ícone novo entra no mapa de `icon.tsx`.
 - Teste no layout invertido (RTL): `left` e `right` trocam de lado, e as setas espelham.
@@ -25,7 +32,7 @@ Componentes genéricos com prefixo `UI`, arquivos em kebab-case e props tipadas 
 | `button.tsx` | Botão com variantes (`primary`, `secondary`, `ghost`, `danger`, `dangerSoft`, ...), `size` e `loading`. |
 | `icon-button.tsx` | Botão só com ícone, tons `default` e `danger`. |
 | `text-link-button.tsx` | Link de texto. |
-| `input.tsx` | Campo com rótulo, mensagem de erro e acessório à direita. |
+| `input.tsx` | Campo com rótulo, ajuda, mensagem de erro e acessório à direita; aceita `ref` para focar. |
 | `chip.tsx` | Opção compacta para filtros. |
 | `pill.tsx` | Selo de estado (`success`, `warning`, `danger`, `neutral`). |
 | `message.tsx` | Mensagem de erro, sucesso ou informação. |
